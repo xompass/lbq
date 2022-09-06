@@ -25,7 +25,7 @@ var tests = []JSONTest{
 func TestParseFilter(t *testing.T) {
 	for _, testFile := range tests {
 		content, _ := os.ReadFile(testFile.path)
-		lbFilter, err := ParseLoopbackFilter(string(content))
+		lbFilter, err := ParseFilter(string(content))
 
 		if err != nil {
 			t.Fatalf(err.Error())
@@ -47,7 +47,7 @@ func BenchmarkParseFilter(b *testing.B) {
 	for _, jsonTest := range tests {
 		b.Run(jsonTest.path, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				_, _ = ParseLoopbackFilter(jsonTest.json)
+				_, _ = ParseFilter(jsonTest.json)
 			}
 		})
 	}

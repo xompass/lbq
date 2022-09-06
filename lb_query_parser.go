@@ -401,7 +401,7 @@ func ParseInclude(f string) ([]Include, error) {
 	return parseIncludeValue(parsed)
 }
 
-func ParseLoopbackFilter(f string) (filter *Filter, err error) {
+func ParseFilter(f string) (filter *Filter, err error) {
 	parser := filterPool.Get()
 	parsed, err := parser.Parse(f)
 
