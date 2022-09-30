@@ -1,4 +1,4 @@
-module xompass.com/lbq
+module github.com/xompass/lbq
 
 go 1.19
 
