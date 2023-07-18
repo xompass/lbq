@@ -1,23 +1,25 @@
-# Introduction 
-This project parses a [loopback 3](https://loopback.io/doc/en/lb3/Querying-data.html) like filter.
+# Loopback Query Filter
+## Introduction 
 
-# Usage
+This golang project parses a [loopback 3](https://loopback.io/doc/en/lb3/Querying-data.html) like filter.
+
+## Usage
 ```go
 package main
 
 import "github.com/xompass/lbq"
 
 func main() {
-	filter, err:= lbq.ParseFilter("<your loopback filter>")
+	filter, err:= lbq.ParseFilter("<your loopback filter json string>")
 	
 	//...
 }
 
 ```
 
-## Example
+### Examples
 
-### Fields
+#### Fields
 ```go
 var filter = lbq.Filter {
 	Fields: lbq.Fields{
@@ -28,7 +30,7 @@ var filter = lbq.Filter {
 }
 ```
 
-### Limit and Skip
+#### Limit and Skip
 ```go
 var filter = lbq.Filter {
 	Limit: 10,
@@ -36,7 +38,7 @@ var filter = lbq.Filter {
 }
 ```
 
-### Order
+#### Order
 ```go
 var filter = lbq.Filter {
 	Order: []lbq.Order{
@@ -52,7 +54,7 @@ var filter = lbq.Filter {
 }
 ```
 
-### Where
+#### Where
 ```go
 var filter = lbq.Filter {
 	Where: lbq.Where{
@@ -68,7 +70,7 @@ var filter = lbq.Filter {
 }
 ```
 
-### Include
+#### Include
 ```go
 var filter = lbq.Filter {
 	Include: []lbq.Include{

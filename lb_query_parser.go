@@ -89,12 +89,12 @@ func parseWhereValue(where *fastjson.Value) (Where, error) {
 		keyStr := string(key)
 		valueType := v.Type()
 
-		if keyStr == "and" || keyStr == "or" {
+		switch {
+		case keyStr == "and" || keyStr == "or":
 			if valueType != fastjson.TypeArray {
 				nestedError = errors.New("invalid query")
 				return
 			}
-
 			andOr := AndOrCondition{}
 			arr, _ := v.Array()
 			for _, nested := range arr {
@@ -104,21 +104,19 @@ func parseWhereValue(where *fastjson.Value) (Where, error) {
 				}
 				andOr = append(andOr, cond)
 			}
-
 			result[keyStr] = andOr
-		} else if valueType == fastjson.TypeObject {
+		case valueType == fastjson.TypeObject:
 			lbWhere, err := parseWhereValue(v)
 			if err != nil {
 				nestedError = err
 			}
 			result[keyStr] = lbWhere
-		} else {
+		default:
 			_, isOp := operators[keyStr]
 			if isOp && (keyStr == "inq" || keyStr == "nin") && valueType != fastjson.TypeArray {
 				nestedError = errors.New("invalid query")
 				return
 			}
-
 			value := getRawValue(v)
 			if isOp {
 				result[keyStr] = value
@@ -158,6 +156,7 @@ func getRawValue(v *fastjson.Value) interface{} {
 		}
 
 		return value
+	case fastjson.TypeObject:
 	default:
 		fmt.Println(valueType.String())
 	}
@@ -166,7 +165,7 @@ func getRawValue(v *fastjson.Value) interface{} {
 }
 
 func parseOrderValue(order *fastjson.Value) ([]Order, error) {
-	switch order.Type() {
+	switch order.Type() { //nolint:exhaustive
 	case fastjson.TypeString:
 		lbOrder, err := parseOrderStr(string(order.GetStringBytes()))
 		if err != nil {
@@ -189,10 +188,12 @@ func parseOrderValue(order *fastjson.Value) ([]Order, error) {
 			result = append(result, lbOrder)
 		}
 		return result, nil
+	case fastjson.TypeObject:
 	default:
 		return nil, errors.New("invalid order param")
 	}
 
+	return nil, errors.New("invalid order param")
 }
 
 func parseOrderStr(orderStr string) (Order, error) {
@@ -215,7 +216,7 @@ func parseOrderStr(orderStr string) (Order, error) {
 
 func parseFieldsValue(v *fastjson.Value) (map[string]bool, error) {
 	fields := map[string]bool{}
-	switch v.Type() {
+	switch v.Type() { //nolint:exhaustive
 	case fastjson.TypeArray:
 		arr := v.GetArray()
 
@@ -229,7 +230,7 @@ func parseFieldsValue(v *fastjson.Value) (map[string]bool, error) {
 		obj := v.GetObject()
 		obj.Visit(func(key []byte, v *fastjson.Value) {
 			prop := string(key)
-			switch v.Type() {
+			switch v.Type() { //nolint:exhaustive
 			case fastjson.TypeFalse:
 				fields[prop] = false
 			case fastjson.TypeTrue:
@@ -248,7 +249,7 @@ func parseIncludeValue(include *fastjson.Value) ([]Include, error) {
 	}
 
 	var result []Include
-	switch include.Type() {
+	switch include.Type() { //nolint:exhaustive
 	case fastjson.TypeString:
 		relations := strings.Split(string(include.GetStringBytes()), ",")
 		for _, relation := range relations {
